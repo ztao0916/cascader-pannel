@@ -1,7 +1,7 @@
 /*
  * @Author: ztao
  * @Date: 2022-07-24 10:47:08
- * @LastEditTime: 2022-07-24 23:02:45
+ * @LastEditTime: 2022-07-24 23:22:11
  * @Description:
  * 逻辑:
  * 1. 当子节点勾选的时候,父节点取消勾选
@@ -189,16 +189,17 @@
       this.ele = document.getElementById(config.ele); // DOM容器
       this.panelWrap = this.initPanel(); // 级联选择器DOM容器
       this.checkedWrap = this.initCheckedWrap(); // 回显选中列表DOM容器
-      this.initNodes(data);
+      this.initNodes(data);//这里是初始化功能
       this.initEvents();
     }
 
     /**
-     * 事件绑定
+     * 事件绑定---初始化事件
      */
-    EoCascader.prototype.initEvents = function initEvents(e) {
+    EoCascader.prototype.initEvents = function initEvents (e) {
+      console.log('this是什么', this);
       this.ele.addEventListener('click', this.bindCascaderClick.bind(this));
-      document.body.addEventListener('click', this.bindBodyClick.bind(this), true);
+      // document.body.addEventListener('click', this.bindBodyClick.bind(this), true);
       if (this.clearable) {
         this.ele.addEventListener('mouseover', this.bindCascaderHover.bind(this));
         this.ele.addEventListener('mouseout', this.bindCascaderOut.bind(this));
@@ -206,7 +207,7 @@
     };
 
     /**
-     * body点击隐藏级联面板
+     * body点击隐藏级联面板,这个事件不需要
      */
     EoCascader.prototype.bindBodyClick = function bindCascaderClick(e) {
       if (e.target.tagName !== 'BODY') return;
@@ -220,7 +221,8 @@
      */
     EoCascader.prototype.bindCascaderClick = function bindCascaderClick(e) {
       e.stopPropagation();
-      if (e.target.id !== this.ele.id) return;
+      console.log(e.target.id); //其他时候的点击面板状态都是空,因为没有id
+      if (e.target.id !== this.ele.id) return; //如果点击了绑定的元素,那么面板状态取反
       this.panelShowState = !this.panelShowState;
       this.ele.className = this.panelShowState ? 'cascader-wrap is-show' : 'cascader-wrap';
     };
@@ -293,10 +295,12 @@
      */
     EoCascader.prototype.initNodes = function initNodes(data) {
       var _this = this;
+      console.log(data);
       this.nodes = data.map(function (nodeData) {
         // 访问适配器
         return new cascader_node(nodeData, _this.config);
       });
+      console.log(this.nodes);
       // 级联面板
       this.menus = [this.nodes];
       // 当为编辑页面时，往往需要回显上次提交的数据，即，
